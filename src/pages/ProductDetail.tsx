@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { productService } from '../services/productService';
-import { Product } from '../types';
+import type { Product } from '../types';
 import CartIcon from '../components/CartIcon';
 
 const ProductDetail: React.FC = () => {

@@ -1,5 +1,5 @@
 import api from './api';
-import { AuthRequest, AuthResponse } from '../types';
+import type { AuthRequest, AuthResponse } from '../types';
 
 export const authService = {
   async register(userData: AuthRequest): Promise<string> {
@@ -30,10 +30,11 @@ export const authService = {
     if (!token) return null;
     
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      return user;
-    } catch {
+        JSON.parse(atob(token.split('.')[1]));
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        return user;
+    }
+    catch {
       return null;
     }
   },

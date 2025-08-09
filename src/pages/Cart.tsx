@@ -56,17 +56,33 @@ const Cart: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow-sm rounded-lg">
           {/* Header */}
-          <div className="px-6 py-4 border-b border-gray-200">
-            <div className="flex justify-between items-center">
-              <h1 className="text-2xl font-bold text-gray-900">購物車</h1>
-              {items.length > 0 && (
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+              <div className="flex items-center space-x-4 mb-4 sm:mb-0">
                 <button
-                  onClick={handleClearCart}
-                  className="text-red-600 hover:text-red-500 text-sm"
+                  onClick={() => navigate(-1)}
+                  className="text-gray-600 hover:text-gray-800 text-sm flex items-center"
                 >
-                  清空購物車
+                  ← 返回
                 </button>
-              )}
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">購物車</h1>
+              </div>
+              <div className="flex items-center space-x-2 sm:space-x-4">
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="bg-green-600 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-green-700 text-xs sm:text-sm flex-1 sm:flex-none"
+                >
+                  繼續購物
+                </button>
+                {items.length > 0 && (
+                  <button
+                    onClick={handleClearCart}
+                    className="text-red-600 hover:text-red-500 text-xs sm:text-sm px-2"
+                  >
+                    清空購物車
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
@@ -171,10 +187,24 @@ const Cart: React.FC = () => {
                   NT$ {summary.totalAmount.toLocaleString()}
                 </span>
               </div>
-              <div className="flex justify-end">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
+                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                  <button
+                    onClick={() => navigate('/dashboard')}
+                    className="bg-gray-100 text-gray-700 px-4 sm:px-6 py-3 rounded-md hover:bg-gray-200 text-sm sm:text-base font-medium border border-gray-300"
+                  >
+                    繼續購物
+                  </button>
+                  <button
+                    onClick={() => navigate('/products')}
+                    className="bg-gray-100 text-gray-700 px-4 sm:px-6 py-3 rounded-md hover:bg-gray-200 text-sm sm:text-base font-medium border border-gray-300"
+                  >
+                    瀏覽商品
+                  </button>
+                </div>
                 <button
                   onClick={handleCheckout}
-                  className="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 text-lg font-medium"
+                  className="bg-blue-600 text-white px-6 sm:px-8 py-3 rounded-md hover:bg-blue-700 text-base sm:text-lg font-medium w-full sm:w-auto"
                 >
                   前往結帳
                 </button>

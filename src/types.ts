@@ -3,8 +3,14 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
+  phone?: string;
   role: 'USER' | 'ADMIN';
   userType?: 'BUYER' | 'AGENT' | 'BOTH';
+  provider: 'LOCAL' | 'GOOGLE';
+  providerId?: string;
+  emailVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AuthRequest {
@@ -22,8 +28,14 @@ export interface AuthResponse {
   email: string;
   firstName: string;
   lastName: string;
+  phone?: string;
   role: 'USER' | 'ADMIN';
   userType?: 'BUYER' | 'AGENT' | 'BOTH';
+  provider: 'LOCAL' | 'GOOGLE';
+  providerId?: string;
+  emailVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Product {
