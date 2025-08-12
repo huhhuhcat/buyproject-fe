@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { productService } from '../services/productService';
 import type { Product } from '../types';
-import CartIcon from '../components/CartIcon';
+import Layout from '../components/Layout';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -39,6 +39,11 @@ const ProductDetail: React.FC = () => {
   const handleAddToCart = async () => {
     if (!product) return;
     
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    
     setAddingToCart(true);
     try {
       await addToCart(product.id, quantity);
@@ -60,52 +65,22 @@ const ProductDetail: React.FC = () => {
   const canAddToCart = product && 
     product.status === 'ACTIVE' && 
     product.quantity > 0 && 
-    user?.id !== product.agent.id;
+    user &&
+    user.id !== product.agent.id;
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <nav className="bg-white shadow">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
-              <div className="flex items-center space-x-4">
-                <Link to="/dashboard" className="text-xl font-semibold text-gray-900">
-                  代購平台
-                </Link>
-              </div>
-            </div>
-          </div>
-        </nav>
+      <Layout title="商品詳情">
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   if (error || !product) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <nav className="bg-white shadow">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between h-16">
-              <div className="flex items-center space-x-4">
-                <Link to="/dashboard" className="text-xl font-semibold text-gray-900">
-                  代購平台
-                </Link>
-              </div>
-              <div className="flex items-center space-x-4">
-                <CartIcon />
-                <button
-                  onClick={logout}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-                >
-                  登出
-                </button>
-              </div>
-            </div>
-          </div>
-        </nav>
+      <Layout title="商品詳情" showBackButton onBack={() => navigate(-1)}>
         <div className="max-w-7xl mx-auto py-12 px-4 text-center">
           <div className="text-red-600 text-lg mb-4">{error}</div>
           <button
@@ -115,43 +90,12 @@ const ProductDetail: React.FC = () => {
             返回
           </button>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navigation */}
-      <nav className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <Link to="/dashboard" className="text-xl font-semibold text-gray-900">
-                代購平台
-              </Link>
-              <span className="text-gray-500">|</span>
-              <button
-                onClick={() => navigate(-1)}
-                className="text-gray-700 hover:text-gray-900"
-              >
-                返回
-              </button>
-            </div>
-            <div className="flex items-center space-x-4">
-              <CartIcon />
-              <span className="text-gray-700">
-                {user?.firstName} {user?.lastName}
-              </span>
-              <button
-                onClick={logout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-              >
-                登出
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <Layout title="商品詳情" showBackButton onBack={() => navigate(-1)}>
 
       {/* Product Detail */}
       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -217,6 +161,15 @@ const ProductDetail: React.FC = () => {
                       {product.agent.firstName} {product.agent.lastName}
                     </p>
                   </div>
+                  {product.country && (
+                    <div>
+                      <span className="text-sm font-medium text-gray-500">國家</span>
+                      <p className="text-gray-900 flex items-center">
+                        <span className="mr-2">{product.country.flag}</span>
+                        {product.country.name}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -271,11 +224,22 @@ const ProductDetail: React.FC = () => {
                   </div>
                 </div>
               )}
+              
+              {!user && product.quantity > 0 && (
+                <div className="border-t pt-6">
+                  <button
+                    onClick={() => navigate('/login')}
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-md text-lg font-medium"
+                  >
+                    登入後加入購物車
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </main>
-    </div>
+    </Layout>
   );
 };
 

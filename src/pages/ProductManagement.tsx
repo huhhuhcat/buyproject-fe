@@ -5,7 +5,7 @@ import { useCart } from '../context/CartContext';
 import { productService } from '../services/productService';
 import type { Product, ProductRequest } from '../types';
 import ProductForm from '../components/ProductForm';
-import CartIcon from '../components/CartIcon';
+import Layout from '../components/Layout';
 
 const ProductManagement: React.FC = () => {
   const { user, logout } = useAuth();
@@ -98,34 +98,7 @@ const ProductManagement: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <Link to="/dashboard" className="text-xl font-semibold text-gray-900">
-                代購平台
-              </Link>
-              <span className="text-gray-500">|</span>
-              <h1 className="text-lg text-gray-700">
-                {isAgent ? '商品管理' : '商品瀏覽'}
-              </h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <CartIcon />
-              <span className="text-gray-700">
-                {user?.firstName} {user?.lastName}
-              </span>
-              <button
-                onClick={logout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-              >
-                登出
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <Layout title={isAgent ? '商品管理' : '商品瀏覽'}>
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
@@ -199,7 +172,7 @@ const ProductManagement: React.FC = () => {
                         庫存: {product.quantity}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-gray-500">
                         分類: {product.category}
                       </span>
@@ -211,6 +184,13 @@ const ProductManagement: React.FC = () => {
                         {product.status === 'ACTIVE' ? '上架中' : '已下架'}
                       </span>
                     </div>
+                    {product.country && (
+                      <div className="mb-4">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                          {product.country.flag} {product.country.name}
+                        </span>
+                      </div>
+                    )}
                     {!isAgent && (
                       <p className="text-sm text-gray-500 mb-4">
                         代購人: {product.agent.firstName} {product.agent.lastName}
@@ -249,7 +229,7 @@ const ProductManagement: React.FC = () => {
           )}
         </div>
       </main>
-    </div>
+    </Layout>
   );
 };
 

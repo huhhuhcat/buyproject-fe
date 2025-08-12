@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { userService } from '../services/userService';
+import Layout from '../components/Layout';
 
 const Profile: React.FC = () => {
   const { user, logout, login } = useAuth();
@@ -9,6 +10,7 @@ const Profile: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [avatarUploading, setAvatarUploading] = useState(false);
   const navigate = useNavigate();
 
   const [selectedUserType, setSelectedUserType] = useState<'BUYER' | 'AGENT' | 'BOTH'>(
@@ -43,6 +45,35 @@ const Profile: React.FC = () => {
     }
   };
 
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    setAvatarUploading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      // 上傳文件
+      const uploadResult = await userService.uploadFile(file, 'avatar');
+      
+      // 更新用戶頭像URL
+      await userService.updateAvatar(uploadResult.url);
+      
+      // 更新本地用戶狀態
+      login({
+        ...user,
+        avatarUrl: `http://localhost:8080${uploadResult.url}`
+      });
+      
+      setSuccess('頭像更新成功！');
+    } catch (err: any) {
+      setError(err.response?.data?.message || '頭像上傳失敗，請稍後再試');
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
   const userTypeOptions = [
     {
       value: 'BUYER' as const,
@@ -69,31 +100,7 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <Link to="/dashboard" className="text-xl font-semibold text-gray-900">
-                代購平台
-              </Link>
-              <span className="text-gray-500">|</span>
-              <h1 className="text-lg text-gray-700">個人資料</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-700">
-                {user.firstName} {user.lastName}
-              </span>
-              <button
-                onClick={logout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-              >
-                登出
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <Layout title="個人資料">
 
       <main className="max-w-3xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow rounded-lg">
@@ -112,6 +119,56 @@ const Profile: React.FC = () => {
               {success}
             </div>
           )}
+
+          {/* 頭像部分 */}
+          <div className="px-6 py-6 border-b border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-900">個人頭像</h3>
+            </div>
+            <div className="flex items-center space-x-6">
+              <div className="relative">
+                <div className="w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center overflow-hidden">
+                  {user?.avatarUrl ? (
+                    <img
+                      src={user.avatarUrl}
+                      alt={`${user.firstName} ${user.lastName}`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-gray-600 text-2xl font-medium">
+                      {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
+                    </span>
+                  )}
+                </div>
+                {avatarUploading && (
+                  <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                  </div>
+                )}
+              </div>
+              <div>
+                <input
+                  type="file"
+                  id="avatar-upload"
+                  accept="image/*"
+                  onChange={handleAvatarUpload}
+                  disabled={avatarUploading}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="avatar-upload"
+                  className={`cursor-pointer bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-4 py-2 rounded-md text-sm font-medium ${
+                    avatarUploading ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  {avatarUploading ? '上傳中...' : '更換頭像'}
+                </label>
+                <p className="mt-2 text-xs text-gray-500">
+                  支持 JPG、PNG、WEBP 格式，大小不超過 5MB
+                </p>
+              </div>
+            </div>
+          </div>
 
           <div className="px-6 py-6">
             <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
@@ -295,7 +352,7 @@ const Profile: React.FC = () => {
           </Link>
         </div>
       </main>
-    </div>
+    </Layout>
   );
 };
 

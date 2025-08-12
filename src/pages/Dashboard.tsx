@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import CartIcon from '../components/CartIcon';
+import Layout from '../components/Layout';
 
 const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -11,38 +11,14 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">代購平台</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <CartIcon />
-              <Link
-                to="/profile"
-                className="text-gray-700 hover:text-gray-900"
-              >
-                {user?.firstName} {user?.lastName}
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-              >
-                登出
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <Layout title="控制台">
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="border-4 border-dashed border-gray-200 rounded-lg p-8">
             <div className="text-center">
               <h2 className="text-2xl font-bold text-gray-900 mb-8">
-                歡迎來到代購平台
+                歡迎來到 BondBuy
               </h2>
               
               {!user?.userType ? (
@@ -109,7 +85,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </main>
-    </div>
+    </Layout>
   );
 };
 

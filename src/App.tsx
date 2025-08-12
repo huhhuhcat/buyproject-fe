@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import EmailVerification from './pages/EmailVerification';
@@ -19,6 +20,7 @@ function App() {
         <Router>
           <div className="App">
             <Routes>
+              <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/verify-email" element={<EmailVerification />} />
@@ -46,14 +48,7 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
-              <Route 
-                path="/products/:id" 
-                element={
-                  <ProtectedRoute>
-                    <ProductDetail />
-                  </ProtectedRoute>
-                } 
-              />
+              <Route path="/products/:id" element={<ProductDetail />} />
               <Route 
                 path="/cart" 
                 element={
@@ -70,7 +65,6 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </div>
         </Router>

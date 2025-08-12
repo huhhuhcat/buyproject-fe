@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import type { Product, ProductRequest } from '../types';
+import type { Product, ProductRequest, Country } from '../types';
+import { countryService } from '../services/countryService';
 
 interface ProductFormProps {
   product?: Product | null;
@@ -16,9 +17,24 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit, onCancel }
     category: '',
     brand: '',
     imageUrl: '',
+    countryId: undefined,
   });
+  const [countries, setCountries] = useState<Country[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const countriesData = await countryService.getActiveCountries();
+        setCountries(countriesData);
+      } catch (err) {
+        console.error('Failed to load countries:', err);
+      }
+    };
+    
+    fetchCountries();
+  }, []);
 
   useEffect(() => {
     if (product) {
@@ -30,6 +46,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit, onCancel }
         category: product.category,
         brand: product.brand,
         imageUrl: product.imageUrl,
+        countryId: product.country?.id,
       });
     }
   }, [product]);
@@ -38,7 +55,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit, onCancel }
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'price' || name === 'quantity' ? Number(value) : value,
+      [name]: name === 'price' || name === 'quantity' || name === 'countryId' 
+        ? (value === '' ? undefined : Number(value))
+        : value,
     }));
   };
 
@@ -172,6 +191,25 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit, onCancel }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                國家
+              </label>
+              <select
+                name="countryId"
+                value={formData.countryId || ''}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">選擇國家</option>
+                {countries.map((country) => (
+                  <option key={country.id} value={country.id}>
+                    {country.flag} {country.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>

@@ -10,6 +10,7 @@ export interface CartItem {
   totalPrice: number;
   productImage?: string;
   sellerName: string;
+  availableStock: number;
   addedAt: string;
 }
 

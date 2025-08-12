@@ -4,6 +4,7 @@ export interface User {
   firstName: string;
   lastName: string;
   phone?: string;
+  avatarUrl?: string;
   role: 'USER' | 'ADMIN';
   userType?: 'BUYER' | 'AGENT' | 'BOTH';
   provider: 'LOCAL' | 'GOOGLE';
@@ -29,6 +30,7 @@ export interface AuthResponse {
   firstName: string;
   lastName: string;
   phone?: string;
+  avatarUrl?: string;
   role: 'USER' | 'ADMIN';
   userType?: 'BUYER' | 'AGENT' | 'BOTH';
   provider: 'LOCAL' | 'GOOGLE';
@@ -36,6 +38,15 @@ export interface AuthResponse {
   emailVerified: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Country {
+  id: number;
+  name: string;
+  code: string;
+  alpha2Code: string;
+  flag: string;
+  active: boolean;
 }
 
 export interface Product {
@@ -49,6 +60,7 @@ export interface Product {
   imageUrl: string;
   status: 'ACTIVE' | 'INACTIVE' | 'OUT_OF_STOCK';
   agent: User;
+  country?: Country;
   createdAt: string;
   updatedAt: string;
 }
@@ -61,4 +73,5 @@ export interface ProductRequest {
   category: string;
   brand: string;
   imageUrl: string;
+  countryId?: number;
 }

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import Layout from '../components/Layout';
 
 const Cart: React.FC = () => {
   const { items, summary, loading, error, updateQuantity, removeItem, clearCart } = useCart();
   const [updatingItems, setUpdatingItems] = useState<Set<number>>(new Set());
+  const [updateError, setUpdateError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleQuantityChange = async (cartId: number, newQuantity: number) => {
@@ -12,7 +14,11 @@ const Cart: React.FC = () => {
     
     setUpdatingItems(prev => new Set(prev).add(cartId));
     try {
+      setUpdateError(null);
       await updateQuantity(cartId, newQuantity);
+    } catch (err: any) {
+      setUpdateError(err.message || '更新數量失敗');
+      setTimeout(() => setUpdateError(null), 3000);
     } finally {
       setUpdatingItems(prev => {
         const newSet = new Set(prev);
@@ -52,21 +58,11 @@ const Cart: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <Layout title="購物車" showBackButton onBack={() => navigate(-1)}>
+      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow-sm rounded-lg">
-          {/* Header */}
           <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-              <div className="flex items-center space-x-4 mb-4 sm:mb-0">
-                <button
-                  onClick={() => navigate(-1)}
-                  className="text-gray-600 hover:text-gray-800 text-sm flex items-center"
-                >
-                  ← 返回
-                </button>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">購物車</h1>
-              </div>
               <div className="flex items-center space-x-2 sm:space-x-4">
                 <button
                   onClick={() => navigate('/dashboard')}
@@ -86,9 +82,9 @@ const Cart: React.FC = () => {
             </div>
           </div>
 
-          {error && (
+          {(error || updateError) && (
             <div className="px-6 py-4 bg-red-50 border-l-4 border-red-400">
-              <p className="text-red-700">{error}</p>
+              <p className="text-red-700">{error || updateError}</p>
             </div>
           )}
 
@@ -128,6 +124,7 @@ const Cart: React.FC = () => {
                       <h3 className="text-lg font-medium text-gray-900">{item.productName}</h3>
                       <p className="text-sm text-gray-500 mt-1">{item.productDescription}</p>
                       <p className="text-sm text-gray-500">代購人: {item.sellerName}</p>
+                      <p className="text-sm text-gray-500">庫存: {item.availableStock} 件</p>
                       <p className="text-lg font-medium text-gray-900 mt-2">
                         NT$ {item.unitPrice.toLocaleString()}
                       </p>
@@ -147,8 +144,9 @@ const Cart: React.FC = () => {
                       </span>
                       <button
                         onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                        disabled={updatingItems.has(item.id)}
+                        disabled={updatingItems.has(item.id) || item.quantity >= item.availableStock}
                         className="w-8 h-8 rounded-r-md border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        title={item.quantity >= item.availableStock ? `庫存只剩 ${item.availableStock} 件` : '增加數量'}
                       >
                         +
                       </button>
@@ -213,7 +211,7 @@ const Cart: React.FC = () => {
           )}
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
