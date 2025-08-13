@@ -37,6 +37,12 @@ const Home: React.FC = () => {
       return;
     }
     
+    // 檢查是否是自己的商品
+    if (user.id === product.agent.id) {
+      alert('這是您的商品，無法加入購物車');
+      return;
+    }
+    
     try {
       await addToCart(product.id, 1);
     } catch (error) {
@@ -130,10 +136,15 @@ const Home: React.FC = () => {
                     </Link>
                     <button
                       onClick={() => handleAddToCart(product)}
-                      disabled={product.quantity === 0}
+                      disabled={product.quantity === 0 || (user && user.id === product.agent.id)}
                       className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white px-3 py-2 rounded-md text-sm font-medium"
                     >
-                      {product.quantity === 0 ? '缺貨' : '加入購物車'}
+                      {product.quantity === 0 
+                        ? '缺貨' 
+                        : (user && user.id === product.agent.id) 
+                          ? '您的商品' 
+                          : '加入購物車'
+                      }
                     </button>
                   </div>
                 </div>

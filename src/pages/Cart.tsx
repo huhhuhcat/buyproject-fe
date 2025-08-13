@@ -41,8 +41,15 @@ const Cart: React.FC = () => {
   };
 
   const handleCheckout = () => {
-    // TODO: 實現結帳功能
-    alert('結帳功能即將開放，敬請期待！');
+    if (items.length === 0) {
+      alert('購物車是空的，無法結帳');
+      return;
+    }
+    
+    // 導航到結帳頁面，並傳遞來源信息
+    navigate('/checkout', {
+      state: { fromCart: true }
+    });
   };
 
   if (loading && items.length === 0) {
@@ -65,7 +72,7 @@ const Cart: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
               <div className="flex items-center space-x-2 sm:space-x-4">
                 <button
-                  onClick={() => navigate('/dashboard')}
+                  onClick={() => navigate('/')}
                   className="bg-green-600 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-green-700 text-xs sm:text-sm flex-1 sm:flex-none"
                 >
                   繼續購物
@@ -94,7 +101,7 @@ const Cart: React.FC = () => {
               <div className="py-12 text-center">
                 <div className="text-gray-500 mb-4">購物車是空的</div>
                 <button
-                  onClick={() => navigate('/dashboard')}
+                  onClick={() => navigate('/')}
                   className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
                 >
                   去逛逛
@@ -188,7 +195,7 @@ const Cart: React.FC = () => {
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
                 <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
                   <button
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/')}
                     className="bg-gray-100 text-gray-700 px-4 sm:px-6 py-3 rounded-md hover:bg-gray-200 text-sm sm:text-base font-medium border border-gray-300"
                   >
                     繼續購物

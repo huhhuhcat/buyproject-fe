@@ -28,7 +28,7 @@ const UserTypeSelection: React.FC = () => {
         });
       }
       
-      navigate('/dashboard');
+      navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.message || '更新失敗，請稍後再試');
     } finally {
@@ -133,7 +133,7 @@ const UserTypeSelection: React.FC = () => {
             <div className="mt-4 text-center">
               <button
                 type="button"
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/')}
                 className="text-sm text-indigo-600 hover:text-indigo-500"
               >
                 返回主頁

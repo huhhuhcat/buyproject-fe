@@ -83,6 +83,13 @@ const UserDropdown: React.FC = () => {
               控制台
             </Link>
           )}
+          <Link
+            to="/orders"
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            onClick={() => setIsOpen(false)}
+          >
+            我的訂單
+          </Link>
           {user.userType === 'AGENT' || user.userType === 'BOTH' ? (
             <Link
               to="/products"

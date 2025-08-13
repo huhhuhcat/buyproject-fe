@@ -29,7 +29,7 @@ const Login: React.FC = () => {
     try {
       const response = await authService.login(formData);
       login(response);
-      navigate('/dashboard');
+      navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.message || '登入失敗，請檢查您的帳號密碼');
     } finally {
