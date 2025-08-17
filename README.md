@@ -32,10 +32,14 @@ src/
 │   └── CartContext.tsx # 購物車狀態管理
 ├── pages/              # 頁面元件
 │   ├── Cart.tsx        # 購物車頁面
+│   ├── Checkout.tsx    # 結帳頁面
 │   ├── Dashboard.tsx   # 主控面板
 │   ├── EmailVerification.tsx # 郵箱驗證
 │   ├── Home.tsx        # 首頁
 │   ├── Login.tsx       # 登入頁面
+│   ├── OrderDetail.tsx # 訂單詳情頁面
+│   ├── Orders.tsx      # 訂單列表頁面
+│   ├── OrderSuccess.tsx # 訂單成功頁面
 │   ├── ProductDetail.tsx # 商品詳情頁面
 │   ├── ProductManagement.tsx # 商品管理 (代購商)
 │   ├── Profile.tsx     # 用戶資料頁面
@@ -46,6 +50,7 @@ src/
 │   ├── authService.ts  # 認證服務
 │   ├── cartService.ts  # 購物車服務
 │   ├── countryService.ts # 國家服務
+│   ├── orderService.ts # 訂單服務
 │   ├── productService.ts # 商品服務
 │   └── userService.ts  # 用戶服務
 ├── types.ts            # TypeScript 類型定義
@@ -70,7 +75,14 @@ src/
 - **商品詳情**: 詳細商品資訊展示
 - **商品管理**: 代購商專用的商品 CRUD 功能
 
-#### 4. 用戶系統
+#### 4. 訂單管理系統
+- **訂單創建**: 支援從購物車直接結帳
+- **訂單追蹤**: 完整的訂單狀態流程管理
+- **雙角色視圖**: 買家和代購商不同的訂單管理界面
+- **狀態更新**: 代購商可即時更新訂單狀態
+- **權限控制**: 精確的訂單操作權限管理
+
+#### 5. 用戶系統
 - **多角色支援**: 買家和代購商不同界面
 - **個人資料管理**: 用戶資料編輯功能
 - **郵箱驗證**: 完整的郵箱驗證流程
@@ -87,10 +99,14 @@ src/
 - **主控面板 (`/dashboard`)**: 根據用戶角色顯示不同內容
 - **商品詳情 (`/products/:id`)**: 商品詳細資訊和購買功能
 - **購物車 (`/cart`)**: 購物車管理和結帳準備
+- **結帳 (`/checkout`)**: 訂單資訊填寫和確認
+- **訂單列表 (`/orders`)**: 訂單管理，支援買家和代購商雙視圖
+- **訂單詳情 (`/orders/:id`)**: 詳細訂單資訊和狀態管理
+- **訂單成功 (`/order-success`)**: 訂單創建成功確認頁面
 - **個人資料 (`/profile`)**: 用戶資料檢視和編輯
 
 ### 代購商專用頁面
-- **商品管理 (`/products/manage`)**: 商品的新增、編輯、刪除功能
+- **商品管理 (`/products`)**: 商品的新增、編輯、刪除功能
 
 ## API 整合
 
@@ -106,6 +122,7 @@ src/
 - `userService`: 用戶資料管理
 - `productService`: 商品資料操作
 - `cartService`: 購物車操作
+- `orderService`: 訂單管理，包含創建、查詢、狀態更新等完整功能
 - `countryService`: 國家資料獲取
 
 ## 狀態管理
