@@ -7,6 +7,7 @@ export interface OrderItem {
   productDescription: string;
   productImageUrl?: string;
   agentName: string;
+  agentId: number;
   quantity: number;
   unitPrice: number;
   totalPrice: number;

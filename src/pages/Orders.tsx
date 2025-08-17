@@ -204,9 +204,13 @@ const Orders: React.FC = () => {
                             e.stopPropagation();
                             navigate(`/orders/${order.id}`);
                           }}
-                          className="px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 text-sm font-medium"
+                          className={`px-4 py-2 rounded-md text-sm font-medium ${
+                            activeTab === 'agent' && orderService.canUpdateStatus(order.status)
+                              ? 'bg-green-600 text-white hover:bg-green-700'
+                              : 'border border-blue-600 text-blue-600 hover:bg-blue-50'
+                          }`}
                         >
-                          查看詳情
+                          {activeTab === 'agent' && orderService.canUpdateStatus(order.status) ? '管理訂單' : '查看詳情'}
                         </button>
                         
                         {activeTab === 'buyer' && orderService.canCancelOrder(order.status) && (
@@ -215,18 +219,6 @@ const Orders: React.FC = () => {
                             className="px-4 py-2 border border-red-600 text-red-600 rounded-md hover:bg-red-50 text-sm font-medium"
                           >
                             取消訂單
-                          </button>
-                        )}
-                        
-                        {activeTab === 'agent' && orderService.canUpdateStatus(order.status) && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(`/orders/${order.id}/manage`);
-                            }}
-                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm font-medium"
-                          >
-                            管理訂單
                           </button>
                         )}
                       </div>

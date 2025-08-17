@@ -94,9 +94,9 @@ const OrderDetail: React.FC = () => {
   };
 
   const isOwner = order && user && order.user.id === user.id;
-  const isAgent = order && user && order.orderItems.some(item => 
-    item.agentName === `${user.firstName} ${user.lastName}`
-  );
+  const isAgent = order && user && 
+    (user.userType === 'AGENT' || user.userType === 'BOTH') &&
+    order.orderItems.some(item => item.agentId === user.id);
 
   if (!user) {
     navigate('/login');
